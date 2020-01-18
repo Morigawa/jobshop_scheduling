@@ -1,28 +1,59 @@
-import job_scheduling.jobs as jobs
-import job_scheduling.simulated_annealing as sim_a
+import math
+from itertools import zip_longest
+from operator import itemgetter
+import random
+import job_scheduling.input as inp
+import job_scheduling.functions as f
 import job_scheduling.display as display
 
 
-def print_solution(schedule):
-    i = 0
-    for machine in schedule:
-        sol = ""
-        for task in machine:
-            sol = sol + task.pr_sol() + " "
-        print("machine " + str(i) + ": " + sol)
-        i += 1
+def temperature(i):
+    amplitude = 1000
+    center = 0
+    width = 10000
+    return amplitude * (1 / (1 + math.exp((i - center) / width)))
 
 
 def main():
-    tests = jobs.construct_tests_js1()  # TODO REMEMBER FIRST ELEMENT IS DESCRIPTION OF TEST
-    tests = tests.__add__(jobs.construct_test_j2())  # list containing all tests
-    print("Anzahl der Tests: ")
-    print(len(tests))
+    tests = inp.construct_tests_js1()
+    tests = tests.__add__(inp.construct_test_j2())
 
-    example = tests[2]  # only one test, delete later
-    result = sim_a.simulated_annealing(example)
-    print_solution(result)
-    display.show(result)
+    jobs_data = tests[0]
+
+    # order and flat list
+    jobs_data = [list(filter(None, i)) for i in zip_longest(*jobs_data)]
+    jobs = []
+    for sublist in jobs_data:
+        for item in sublist:
+            jobs.append(item)
+
+    # find how many machines are there
+    machines_count = max(jobs, key=itemgetter(2))[2] + 1
+    results = f.schedule(jobs, machines_count)
+
+    min_duration = 999999
+    best_jobs = []
+
+    iter = 100000
+    for i in range(0, iter):
+
+        old = list(results)
+        alter = f.shuffle_jobs(jobs, jobs_data)
+        results = f.schedule(alter, machines_count)
+
+        d_old = f.find_max_duration(old)
+        d_alter = f.find_max_duration(results)
+
+        if d_old >= d_alter or random.uniform(0, 1) < math.exp(-(d_alter - 1 - d_old) / temperature(i)):
+            jobs = alter
+        if d_alter < min_duration:
+            min_duration = d_alter
+            best_jobs = list(results)
+
+    f.print_result(best_jobs)
+    print("mininum duration: " + str(min_duration))
+    display.show(best_jobs)
+
 
 
 if __name__ == "__main__":
