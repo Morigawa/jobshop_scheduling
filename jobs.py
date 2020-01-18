@@ -25,6 +25,9 @@ class Task:
     def get_end(self):
         return self.starting_time + self.duration
 
+    def pr_sol(self):
+        return "(" + str(self.task_id) + ", " + str(self.starting_time) + ")"
+
     def __str__(self):
         return str(self.task_id) + " m:" + str(self.machine) + " " + str(self.starting_time) + " - " + str(
             self.get_end())
