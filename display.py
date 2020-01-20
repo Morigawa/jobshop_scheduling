@@ -1,8 +1,9 @@
+import random
 import pygame
 from job_scheduling.functions import find_max_duration
 
 
-def show(schedule):
+def show(schedule, am_jobs):
 
     pygame.init()
     dis_x = 1800
@@ -13,11 +14,7 @@ def show(schedule):
     height = int(600 / len(schedule))
     start_x = 10
     y = 150
-    colors = [(255, 255, 255), (0, 0, 255), (0, 255, 0), (255, 0, 0), (255, 100, 10), (255, 255, 0), (0, 255, 170),
-            (115, 0, 0), (180, 255, 100), (255, 100, 180), (240, 0, 255), (127, 127, 127), (255, 0, 230),
-            (100, 40, 0), (0, 50, 0), (0, 0, 100), (210, 150, 75), (255, 255, 100), (255, 200, 0), (200, 200, 200)]
-
-    #colors = [(random.randint(0, 240), random.randint(0, 240), random.randint(0, 240)) for i in range(50)]
+    colors = [(random.randint(0, 240), random.randint(0, 240), random.randint(0, 240)) for i in range(50)]
 
     for machine in schedule:
         x = start_x + (machine[0][1] * scaling)

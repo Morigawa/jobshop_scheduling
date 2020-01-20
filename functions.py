@@ -40,8 +40,6 @@ def schedule(jobs, machine_count):
     # first parameter is machine number
     # your solution -> results = [[],[],[]]
     results = [[] for x in range(machine_count)]
-    # iterator through the jobs
-    it = [0] * machine_count
     # time of end of job, equal to jobs
     time = [0] * (len(jobs) + 1)
     # time end of machine last job, equal to machines
@@ -52,7 +50,7 @@ def schedule(jobs, machine_count):
         duration = job[3]  # duration length
         start = max(time_m[machine_n], time[
             job_n])  # check if what is bigger the last finished job on the same machine or previous job, which has to be done
-        results[machine_n].insert(len(results[machine_n]), (job, start, start + duration))  # insert to the end
+        results[machine_n].append((job, start, start + duration))  # insert to the end
         # update the last time of job and machine
         time[job_n] = start + duration
         time_m[machine_n] = start + duration
