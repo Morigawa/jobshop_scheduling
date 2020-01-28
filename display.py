@@ -1,21 +1,27 @@
 import random
 import pygame
-from job_scheduling.functions import find_max_duration
+from functions import find_max_duration
 
+
+# used to visualize a single schedule
 
 def show(schedule, am_jobs):
 
+    # window initialization
     pygame.init()
     dis_x = 1800
-    game_display = pygame.display.set_mode((dis_x, 900))
+    game_display = pygame.display.set_mode((dis_x, 900))    # change if problem with window size
     game_display.fill((0, 0, 0))
 
-    scaling = (dis_x*0.99)/find_max_duration(schedule)
-    height = int(600 / len(schedule))
+    scaling = (dis_x*0.99)/find_max_duration(schedule)  # scaling factor, so each schedule will fit
+    height = int(600 / len(schedule))   # total height the same every time, single height depends on amount of machines
     start_x = 10
     y = 150
+
+    # random color list, to assign each job a different color
     colors = [(random.randint(0, 240), random.randint(0, 240), random.randint(0, 240)) for i in range(50)]
 
+    # calculate size and position of each task and create corresponding rectangle
     for machine in schedule:
         x = start_x + (machine[0][1] * scaling)
         for task in machine:
@@ -26,6 +32,7 @@ def show(schedule, am_jobs):
             x += width * scaling
         y += height
 
+    # window loop
     while True:
         for event in pygame.event.get():
 

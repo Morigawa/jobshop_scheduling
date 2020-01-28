@@ -12,7 +12,8 @@ def find_prev_index(jobs, job):
             return i
 
 
-def shuffle_jobs(array, jobs_data):
+# generating a random, valid neighbor based on previous solution
+def shuffle_jobs(array):
     while True:
         first_job, second_job = random.choice(array), random.choice(array)
         # check if job_number is different
@@ -27,6 +28,7 @@ def shuffle_jobs(array, jobs_data):
                 return array
 
 
+# evaluation function, total length of schedule
 def find_max_duration(array):
     result = 0
     for sublist in array:
@@ -36,27 +38,27 @@ def find_max_duration(array):
     return result
 
 
+# creates schedule out of a ordered job list
+# each job list is validated before
 def schedule(jobs, machine_count):
     # first parameter is machine number
-    # your solution -> results = [[],[],[]]
     results = [[] for x in range(machine_count)]
-    # time of end of job, equal to jobs
-    time = [0] * (len(jobs) + 1)
-    # time end of machine last job, equal to machines
-    time_m = [0] * machine_count
+    time = [0] * (len(jobs) + 1)  # time of end of job
+    time_m = [0] * machine_count  # time end of machine last job
     for job in jobs:
         job_n = job[0]  # job number
         machine_n = job[2]  # machine number
         duration = job[3]  # duration length
-        start = max(time_m[machine_n], time[
-            job_n])  # check if what is bigger the last finished job on the same machine or previous job, which has to be done
+        # starting time is max(end of prev task in job, end of prev task on machine)
+        start = max(time_m[machine_n], time[job_n])
         results[machine_n].append((job, start, start + duration))  # insert to the end
         # update the last time of job and machine
-        time[job_n] = start + duration
-        time_m[machine_n] = start + duration
+        time[job_n] = start + duration  # set new time of end of job
+        time_m[machine_n] = start + duration    # set new end of last job of machine
     return results
 
 
+# function that prints schedule as readable output
 def print_result(res):
     i = 0
     for machine in res:
